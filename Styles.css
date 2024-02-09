@@ -1,0 +1,53 @@
+/*Margin at the top*/
+
+h1 {
+	/* Change later */
+	text-align: center;
+	color: red;
+}
+
+h2 {
+	/*
+	Size
+	font
+	center
+	*/
+	
+}
+
+p {
+	color: black;
+	margin-top: 15px;
+	margin-bottom: 5px;
+	margin-left: 60px;
+	margin-right: 60px;
+}
+
+#paraTop {
+	
+	color: black;
+	margin-left: 60px;
+	margin-right: 60px;
+	padding-top: 5px;
+	border-top-style: solid;
+}
+
+#caption {
+	/*Intended for use below pictures for a caption */
+	font-size 6
+	
+}
+
+
+img {
+	margin-top: 15px;
+	margin-bottom: 5px;
+	margin-left: 60px;
+}
+
+/*
+Other stuffs
+
+Left div
+
+*/
