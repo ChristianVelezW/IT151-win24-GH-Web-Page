@@ -18,7 +18,7 @@
         
         <main class="wrapper">
             <h2>Instructions</h2>
-            <p>Today we’re going to be setting up a “Foundry Virtual Tabletop” Server on a cloud hosted platform. I’ll stay generic when it comes to cloud providers as there are differences between providers, but the basics remain the same. I'll be using Linode today as it seems to be one of the more basic providers while providing a static IP address. (If you don’t have the option of a static IP, I will address this as well.) This tutorial will assume you already have an account with the Foundry website and have purchased a license and are thus familiar with the website https://www.foundryvtt.com/.</p>
+            <p>Today we’re going to be setting up a “Foundry Virtual Tabletop” Server on a cloud hosted platform. I’ll stay generic when it comes to cloud providers as there are differences between providers, but the basics remain the same. I'll be using Linode today as it seems to be one of the more basic providers while providing a static IP address. (If you don’t have the option of a static IP, I will address this as well.) This tutorial will assume you already have an account with the Foundry website and have purchased a license and are thus familiar with the website <a href="https://www.foundryvtt.com/" target="_blank">https://www.foundryvtt.com/.</a></p>
 
             <p>To start with, we will need an account with the provider of your choice. Once an account has been created, you should be greeted with a screen like the one here.</p>
             
@@ -50,7 +50,7 @@
             <div class="center">
                 <pre><code class="code">su - foundry</code></pre>
             </div>
-            <p>The only extra resource we need (unless you need a dynamic DNS. For that, you can follow this guide here:  https://pimylifeup.com/raspberry-pi-duck-dns/ ) is a repository that doesn't come with ubuntu by default. the node repository will need to be installed using the following code. *editor's note: unzip and nano are not always installed by default. The code to install node has been adjusted to also install unzip and nano.</p>
+            <p>The only extra resource we need (unless you need a dynamic DNS. For that, you can follow this guide here:  <a href="https://pimylifeup.com/raspberry-pi-duck-dns/" target="_blank">https://pimylifeup.com/raspberry-pi-duck-dns/</a> ) is a repository that doesn't come with ubuntu by default. the node repository will need to be installed using the following code. *editor's note: unzip and nano are not always installed by default. The code to install node has been adjusted to also install unzip and nano.</p>
             <div class="center">
                 <pre><code class="code">sudo apt install -y ca-certificates curl gnupg</code></pre>
                     <pre><code class="code">sudo mkdir -p /etc/apt/keyrings</code></pre>
