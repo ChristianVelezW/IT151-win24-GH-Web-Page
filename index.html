@@ -12,7 +12,7 @@
         <header>
             <h1 class="page-header">Setting up a Foundry Digital Tabletop</h1>
             <nav class="topnav" id="myTopnav">
-                <a href="https://www.foundryvtt.com/" target="_blank">Foundry Digital Tabletop</a>
+                <a href="https://www.foundryvtt.com/" target="_blank">by Foundry Virtual Tabletop</a>
             </nav>
         </header>
         
@@ -22,91 +22,90 @@
 
             <p>To start with, we will need an account with the provider of your choice. Once an account has been created, you should be greeted with a screen like the one here.</p>
             
-            <img src="./media/1a.png">
+            <img class="center" src="./media/1a.png">
             
             <p>We’ll create a new virtual machine (called a ‘linode’ here) and we want to select the options that make most sense for what we will be doing. FVTT recommends 2 cpu cores and 4GB of RAM, so we’ll select those as our options and Ubuntu 23.10 for our OS. If given the option to use a private IP, select it now, as it cuts out a step later in the writeup. From here, most of the work will be done via command line, so set your connection up to your new virtual machine as you see fit. I recommend connecting via SSH.</p>
 
-            <img src="./media/1b.png">
+            <img class="center" src="./media/1b.png">
 
             <p>Most cloud providers will create your vm using a template, so the installation will likely have been completed, however, if you are installing the OS on “bare” hardware, you will need to go through the installation steps at this point. Make sure to enable openssh server so that you will be able to connect to your machine via SSH.</p>
 
             <p>Once we’re greeted with this screen, it will be time to do a little housekeeping.</p>
             
-            <img src="./media/2.png">
+            <img class="center" src="./media/2.png">
             
             <p>Using the package manager APT, we will update the system to the most up to date packages to keep the system secure and stable. My system is already up to date, but the following commands are all that are needed to update ubuntu.</p>
                 <!--<button onclick="copyToClipboard('#p1')">Copy TEXT 1</button>-->
-                <div>
-                    <pre><code id="p1">sudo apt update | sudo apt upgrade –y</code></pre>
+                <div class="center">
+                    <pre><code class="code">sudo apt update | sudo apt upgrade –y</code></pre>
                 </div>
-            <img src="./media/3.png">
+            <img class="center" src="./media/3.png">
 
-            <p>Because we want to run this as a separate service, we want to run this under an unattended account. To do this, we will need to create a new user account, and give it sudo permissions.
-                <pre><code>sudo adduser foundry</code></pre>
+            <p>Because we want to run this as a separate service, we want to run this under an unattended account. To do this, we will need to create a new user account, and give it sudo permissions.</p>
+            <div class="center">
+                <pre><code class="code">sudo adduser foundry</code></pre>
+                <pre><code class="code">sudo usermod -aG sudo foundry</code></pre>
+            </div>
+            <p>You will need to give the new account a password. Make sure that it is different from your first user account. This server is exposed to the internet, so don’t skimp on security. Now switch over to the new account so we can get to installing your new server!</p>
+            <div class="center">
+                <pre><code class="code">su - foundry</code></pre>
+            </div>
+            <p>The only extra resource we need (unless you need a dynamic DNS. For that, you can follow this guide here:  https://pimylifeup.com/raspberry-pi-duck-dns/ ) is a repository that doesn't come with ubuntu by default. the node repository will need to be installed using the following code. *editor's note: unzip and nano are not always installed by default. The code to install node has been adjusted to also install unzip and nano.</p>
+            <div class="center">
+                <pre><code class="code">sudo apt install -y ca-certificates curl gnupg</code></pre>
+                    <pre><code class="code">sudo mkdir -p /etc/apt/keyrings</code></pre>
+                        <pre><code class="code">curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg</code><pre>
+                            <pre><code class="code">echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list</code><pre>
+            </div>
+            <p>Now that that is done, we can update again and see that the repo has now been added to the list of available repos that APT can use.</p>
+            <div class="center">
+                <pre><code class="code">sudo apt update</code></pre>
+            </div>
+                <img class="center" src="./media/4.png">
+
+            <p>Now that we have access to the node repo, we can install NodeJS itself. *as well as unzip and nano*</p>
+            <div class="center">
+                <pre><code class="code">sudo apt install nodejs unzip nano -y</code></pre>
+            </div>
+            <p>Verify that node is successfully installed.</p>
+            <div class="center">
+                <pre><code class="code">node --version</code></pre>
+            </div>
+            <p>Now that we have the building blocks, it’s time to build. Start by creating the folders we’ll use for foundry to be stored in.</p>
             
-                <pre><code>sudo usermod -aG sudo foundry</code></pre>
-            You will need to give the new account a password. Make sure that it is different from your first user account. This server is exposed to the internet, so don’t skimp on security. Now switch over to the new account so we can get to installing your new server!
-
-                <pre><code>su - foundry</code></pre>
-
-            The only extra resource we need (unless you need a dynamic DNS. For that, you can follow this guide here:  https://pimylifeup.com/raspberry-pi-duck-dns/ ) is a repository that doesn't come with ubuntu by default. the node repository will need to be installed using the following code. *editor's note: unzip and nano are not always installed by default. The code to install node has been adjusted to also install unzip and nano.</p>
-            <div>
-                <pre><code>sudo apt install -y ca-certificates curl gnupg
-                    sudo mkdir -p /etc/apt/keyrings
-                    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-                    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list</code><pre>
+            <div class="center">
+                <pre><code class="code">cd ~ | mdkir foundry foundryuserdata</code></pre>
             </div>
-            Now that that is done, we can update again and see that the repo has now been added to the list of available repos that APT can use.</p>
-            <div>
-                <pre><code>sudo apt update</code></pre>
+           <p>Move into the foundry folder using the “change directory” command or cd.</p> 
+            <div class="center">
+                <pre><code class="code">cd foundry</code></pre>
             </div>
-                <img src="./media/4.png">
-
-            <p>Now that we have access to the node repo, we can install NodeJS itself. *as well as unzip and nano*  
-            <div>
-                <pre><code>sudo apt install nodejs unzip nano -y</code></pre>
+            <p>This next section is timed, so be ready to be somewhat quick. In your web browser, navigate to the Foundry website, and head to your licenses page once logged into your account. As we are using Linux make sure that you select that option in the appropriate drop down, and select the “Timed URL” option, otherwise you’ll need to use rsync to move files between machines. Once clicked, your link will be copied to your clipboard. (A terrifying prospect for mac users. 😉) The link will stay live for 5 minutes before expiring. Paste your link to a note as you’ll need to wrap that link in the code below before pasting it all into your terminal.</p>
+            <div class="center">
+                <pre><code class="code"> wget --output-document ~/foundry/foundryvtt.zip "&lt;download url&gt;"</code></pre>
             </div>
-            Verify that node is successfully installed.
-            <div>
-                <pre><code>node --version</code></pre>
-            </div>
-            Now that we have the building blocks, it’s time to build. Start by creating the folders we’ll use for foundry to be stored in.
-            
-            <div>
-                <pre><code>cd ~ | mdkir foundry foundryuserdata</code></pre>
-            </div>
-            Move into the foundry folder using the “change directory” command or cd.
-            
-            <div>
-                <pre><code>cd foundry</code></pre>
-            </div>
-            This next section is timed, so be ready to be somewhat quick. In your web browser, navigate to the Foundry website, and head to your licenses page once logged into your account. As we are using Linux make sure that you select that option in the appropriate drop down, and select the “Timed URL” option, otherwise you’ll need to use rsync to move files between machines. Once clicked, your link will be copied to your clipboard. (A terrifying prospect for mac users. 😉) The link will stay live for 5 minutes before expiring. Paste your link to a note as you’ll need to wrap that link in the code below before pasting it all into your terminal.
-            <div>
-                <pre><code> wget --output-document ~/foundry/foundryvtt.zip "&lt;download url&gt;"</code></pre>
-            </div>
-            Make sure the link has the quotations around it. It won't work without them. If done successfully your folder should now have a .zip file in it. Now we can expand the zip file into the directory and remove the zip file.
+            <p>Make sure the link has the quotations around it. It won't work without them. If done successfully your folder should now have a .zip file in it. Now we can expand the zip file into the directory and remove the zip file.</p>
            
-            <div>
-                <pre><code>unzip ~/foundry/foundryvtt.zip -d ~/foundry/ | rm foundryvtt.zip</code></pre>
+            <div class="center">
+                <pre><code class="code">unzip ~/foundry/foundryvtt.zip -d ~/foundry/ | rm foundryvtt.zip</code></pre>
             </div>
-            The list command should now show that your directory has several files and directories in it.</p>
-                <img src="./media/5b.png">
-            <p>Congrats! Foundry is now installed! There’s a bit more work to do to be able to use it though. Moving back to the home directory using the cd command again, we should test everything to make sure it functions. 
-           
-            <div>
-                <pre><code>node foundry/resources/app/main.js --dataPath=/home/foundry/foundryuserdata</code></pre>
+            <p>The list command should now show that your directory has several files and directories in it.</p>
+                <img class="center" src="./media/5b.png">
+            <p>Congrats! Foundry is now installed! There’s a bit more work to do to be able to use it though. Moving back to the home directory using the cd command again, we should test everything to make sure it functions.</p>
+            <div class="center">
+                <pre><code class="code">node foundry/resources/app/main.js --dataPath=/home/foundry/foundryuserdata</code></pre>
             </div>
-            As long as there are no errors, you will be able to point a webbrowser to your IP address with a port of 30000 and access the interface.</p>
-                <img src="./media/6.png">
+            <p>As long as there are no errors, you will be able to point a webbrowser to your IP address with a port of 30000 and access the interface.</p>
+                <img class="center" src="./media/6.png">
             <p>(A side note: If you aren’t familiar with IP/port schema, it is address:port ex:10.10.10.243:30000)
-            Unfortunately, this isn’t persistent, so let’s use systemd to make it so. In your terminal exit the running process using ‘ctrl + c’ keys. You’ll be dropped back into the home directory. Now we’re going to create a new file within systemd that will manage the service and keep it running perpetually. Using nano, we will create a new file within systemd named foundryvtt.service. You'll be greeted with a small word emp
+            Unfortunately, this isn’t persistent, so let’s use systemd to make it so. In your terminal exit the running process using ‘ctrl + c’ keys. You’ll be dropped back into the home directory. Now we’re going to create a new file within systemd that will manage the service and keep it running perpetually. Using nano, we will create a new file within systemd named foundryvtt.service. You'll be greeted with a small window to create our new file.</p>
             
-            <div>
-                <pre><code>sudo nano /etc/systemd/system/foundryvtt.service</code></pre>
+            <div class="center">
+                <pre><code class="code">sudo nano /etc/systemd/system/foundryvtt.service</code></pre>
             </div>
             
-            <div>
-                <pre><code>[Unit]
+            <div class="center">
+                <pre><code class="code">[Unit]
                     Description=Foundry VTT
                     
                     [Service]
@@ -118,27 +117,26 @@
                     [Install]
                     WantedBy=multi-user.target</code></pre>
             </div>
-            The screen should look something like this.</p>
-                <img src="./media/7.png">
-            <p>Save this pressing ctrl + x, y, then enter. Now we can just enable the service, and restart systemd with the following commands.
+            <p>The screen should look something like this.</p>
+                <img class="center" src="./media/7.png">
+            <p>Save this pressing ctrl + x, y, then enter. Now we can just enable the service, and restart systemd with the following commands.</p>
 
-            <div>
-                <pre><code>sudo systemctl daemon-reload
+            <div class="center">
+                <pre><code class="code">sudo systemctl daemon-reload
                     sudo systemctl start foundryvtt
                     sudo systemctl enable foundryvtt</code></pre>
             </div>
-            </p>
             <p>Your service is now persistent! Now do you really want your friends to go to an IP address every single time you want to play a game? If you have a custom domain, you don’t have to. For this part, I will assume that you already have a domain set up and configured so if not, please do so now.</p>
 
             <p>In your DNS settings where your domain name is registered, you will want to create a new CNAME record if you’re using DDNS, or an A/AAAA record if you have a private IP address. For a CNAME, you will want to point the subdomain to the ddns you are using as shown here.</p>
-                <img src="./media/8.png">
+                <img class="center" src="./media/8.png">
             <p>For a private IP, you can use your IP address obtained from your cloud host as the target, however you’ll need to add an additional step in the form of an SRV record to point directly to the correct port.</p>
-                <img src="./media/9.png">
+                <img class="center" src="./media/9.png">
 
             <p>If you have multiple SRV records, you will want to address the weight and priority as needed.</p>
 
             <p>Once DNS has been set up, you're all finished!</p>
-                <img src="./media/10.png">
+                <img class="center" src="./media/10.png">
 
             <p>This tutorial will get you set up with the basics. Other security features such as SSL and configuration are outside the scope of this tutorial. 
             Have fun and keep gaming!</p>
